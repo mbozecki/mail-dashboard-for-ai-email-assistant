@@ -1,0 +1,47 @@
+.search-field {
+  flex-shrink: 0;
+}
+
+.input-min-w {
+  min-width: 220px;
+}
+
+.col-email {
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.col-status {
+  width: 140px;
+}
+
+.col-num {
+  width: 100px;
+}
+
+.col-num-val {
+  font-size: 13px;
+  color: var(--ink-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.col-date {
+  width: 110px;
+}
+
+.col-date-val {
+  font-size: 12px;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.col-actions {
+  width: 120px;
+}
+
+.empty-cell {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--ink-muted);
+  font-size: 13px;
+}

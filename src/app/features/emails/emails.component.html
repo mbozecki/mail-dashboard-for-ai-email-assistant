@@ -1,0 +1,122 @@
+<div class="page">
+
+  <div class="page-header page-toolbar">
+    <div>
+      <h2 class="page-title">Emaile</h2>
+      <p class="page-desc">
+        @if (total()) { {{ total() | number }} wiadomości } @else { Skrzynka odbiorcza }
+      </p>
+    </div>
+    <p-iconfield iconPosition="left" class="search-field">
+      <p-inputicon styleClass="pi pi-search" />
+      <input pInputText [(ngModel)]="search" (ngModelChange)="onSearch()"
+             placeholder="Szukaj tematu…" class="input-min-w" />
+    </p-iconfield>
+  </div>
+
+  <div class="panel panel-overflow">
+    <p-table [value]="emails()" [loading]="loading()"
+             [lazy]="true" [totalRecords]="total()"
+             [rows]="pageSize" [paginator]="true"
+             (onPage)="onPage($event)"
+             [rowHover]="true"
+             styleClass="p-datatable-sm">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="col-avatar"></th>
+          <th>Temat</th>
+          <th class="col-sender">Od</th>
+          <th class="col-date-h">Data</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-email>
+        <tr (click)="openEmail(email)" class="row-clickable">
+          <td>
+            <div class="sender-avatar" [style.background]="senderColor(email.sender)">
+              {{ senderInitial(email.sender, email.sender_name) }}
+            </div>
+          </td>
+          <td>
+            <span class="subject-text">{{ email.subject || '(no subject)' }}</span>
+          </td>
+          <td>
+            <div class="sender-name">{{ email.sender_name || email.sender }}</div>
+            @if (email.sender_name) {
+              <div class="sender-email-small">{{ email.sender }}</div>
+            }
+          </td>
+          <td>
+            <span class="date-text">{{ email.date?.slice(0,10) ?? '—' }}</span>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4" class="empty-cell">Brak emaili</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<p-drawer [(visible)]="drawerOpen" position="right"
+          [style]="{ width: '520px' }"
+          header="Szczegóły emaila">
+  @if (detailLoading()) {
+    <div class="drawer-skeleton">
+      <p-skeleton height="1.4rem" width="75%" />
+      <p-skeleton height="1rem" width="50%" />
+      <p-skeleton height="1rem" width="35%" />
+      <p-skeleton height="200px" />
+    </div>
+  } @else if (selectedEmail()) {
+    <div class="drawer-body">
+
+      <div>
+        <p class="meta-label">Temat</p>
+        <p class="drawer-subject">{{ selectedEmail()!.subject || '(brak tematu)' }}</p>
+      </div>
+
+      <div class="drawer-meta-grid">
+        <div>
+          <p class="meta-label">Od</p>
+          <p class="drawer-meta-val">{{ selectedEmail()!.sender_name || selectedEmail()!.sender }}</p>
+          @if (selectedEmail()!.sender_name) {
+            <p class="drawer-meta-small">{{ selectedEmail()!.sender }}</p>
+          }
+        </div>
+        <div>
+          <p class="meta-label">Data</p>
+          <p class="drawer-meta-val tabular">{{ selectedEmail()!.date?.slice(0,10) ?? '—' }}</p>
+        </div>
+      </div>
+
+      @if (selectedEmail()!.attachments.length) {
+        <div>
+          <p class="meta-label">Załączniki</p>
+          <div class="att-chips">
+            @for (att of selectedEmail()!.attachments; track att.id) {
+              <span class="source-chip">
+                <i class="pi pi-paperclip chip-icon"></i>
+                {{ att.file_name }}
+                @if (att.total_brutto) {
+                  · {{ att.total_brutto | number:'1.2-2' }} PLN
+                }
+              </span>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="drawer-content-wrap">
+        <p class="meta-label">Treść</p>
+        <div class="drawer-content-body">
+          {{ selectedEmail()!.content || '(brak treści)' }}
+        </div>
+      </div>
+    </div>
+  }
+</p-drawer>

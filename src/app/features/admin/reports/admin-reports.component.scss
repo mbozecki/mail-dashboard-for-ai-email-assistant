@@ -1,0 +1,27 @@
+.filter-panel {
+  padding: 24px;
+  margin-bottom: 16px;
+  max-width: 600px;
+}
+
+.filter-heading {
+  margin-bottom: 16px;
+}
+
+.filter-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.report-band {
+  margin-bottom: 16px;
+  max-width: 600px;
+}

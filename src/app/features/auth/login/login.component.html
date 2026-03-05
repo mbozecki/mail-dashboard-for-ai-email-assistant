@@ -1,0 +1,82 @@
+<div class="login-page">
+  <div class="login-grid-bg"></div>
+
+  <div class="login-container">
+    <div class="login-brand">
+      <div class="login-logo">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+          <circle cx="13" cy="19.5" r="2.6" fill="#8b5cf6"/>
+          <path d="M7.8 14.8 A7.5 7.5 0 0 1 18.2 14.8"
+                stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round" opacity="0.65"/>
+          <path d="M3.5 10 A12.2 12.2 0 0 1 22.5 10"
+                stroke="#8b5cf6" stroke-width="1.8" stroke-linecap="round" opacity="0.28"/>
+        </svg>
+      </div>
+      <h1 class="login-title">AI Asystent</h1>
+      <p class="login-subtitle">Sign in to your dashboard</p>
+    </div>
+
+    <div class="login-card">
+      @if (mode() === 'password') {
+        <form [formGroup]="form" (ngSubmit)="signIn()">
+          <div class="form-fields">
+            <div>
+              <label class="form-label">Email</label>
+              <input pInputText formControlName="email" type="email"
+                     placeholder="you@example.com" class="login-input" />
+            </div>
+            <div>
+              <label class="form-label">Password</label>
+              <p-password formControlName="password" [feedback]="false"
+                          [toggleMask]="true" styleClass="w-full"
+                          inputStyleClass="w-full"
+                          placeholder="••••••••" />
+            </div>
+            @if (error()) {
+              <p-message severity="error" [text]="error()!" />
+            }
+            <div class="form-submit">
+              <p-button label="Sign in" type="submit" [loading]="loading()"
+                        [disabled]="form.invalid"
+                        styleClass="w-full justify-center" />
+            </div>
+          </div>
+        </form>
+
+        <p-divider align="center">
+          <span class="divider-label">or</span>
+        </p-divider>
+
+        <p-button label="Send magic link" icon="pi pi-send" severity="secondary"
+                  styleClass="w-full justify-center"
+                  (onClick)="switchMode('magic')" />
+
+      } @else {
+        <div class="form-fields">
+          <div>
+            <label class="form-label">Email</label>
+            <input pInputText [(ngModel)]="magicEmail" type="email"
+                   placeholder="you@example.com" class="login-input" />
+          </div>
+          @if (magicSent()) {
+            <p-message severity="success" text="Check your email for the magic link!" />
+          }
+          @if (error()) {
+            <p-message severity="error" [text]="error()!" />
+          }
+          <p-button label="Send magic link" [loading]="loading()" icon="pi pi-send"
+                    styleClass="w-full justify-center"
+                    (onClick)="sendMagicLink()" />
+        </div>
+
+        <p-divider align="center">
+          <span class="divider-label">or</span>
+        </p-divider>
+
+        <p-button label="Sign in with password" severity="secondary"
+                  styleClass="w-full justify-center"
+                  (onClick)="switchMode('password')" />
+      }
+    </div>
+  </div>
+</div>

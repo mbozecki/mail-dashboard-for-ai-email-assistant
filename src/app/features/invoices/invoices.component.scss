@@ -1,0 +1,113 @@
+.search-field {
+  flex-shrink: 0;
+}
+
+.input-min-w {
+  min-width: 200px;
+}
+
+.grand-total {
+  color: var(--signal-bright);
+  font-variant-numeric: tabular-nums;
+}
+
+.filter-chip {
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-weight: 500;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 100ms;
+  background: transparent;
+
+  &--active {
+    border-color: var(--border-focus);
+    color: var(--signal-bright);
+    background: var(--signal-dim);
+  }
+
+  &--idle {
+    border-color: var(--border);
+    color: var(--ink-muted);
+    background: var(--raised);
+  }
+}
+
+.col-seller {
+  width: 160px;
+}
+
+.col-date-inv {
+  width: 110px;
+}
+
+.col-amount {
+  width: 120px;
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.file-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
+  background: rgba(139, 92, 246, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.file-icon-i {
+  font-size: 12px;
+  color: var(--signal-bright);
+}
+
+.file-name {
+  font-size: 13px;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 300px;
+}
+
+.seller-text {
+  font-size: 13px;
+  color: var(--ink-dim);
+}
+
+.date-text {
+  font-size: 12.5px;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.amount-text {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.amount-netto {
+  font-size: 13px;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.amount-empty {
+  color: var(--ink-ghost);
+}
+
+.empty-cell {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--ink-muted);
+  font-size: 13px;
+}

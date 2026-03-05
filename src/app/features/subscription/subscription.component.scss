@@ -1,0 +1,56 @@
+.sub-card {
+  max-width: 520px;
+  padding: 28px 32px;
+  margin: 0 auto;
+}
+
+.skeleton-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.status-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.detail-row {
+  display: flex;
+  gap: 8px;
+}
+
+.detail-key {
+  font-size: 13px;
+  color: var(--ink-muted);
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.detail-val {
+  font-size: 13px;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.sub-desc {
+  margin: 0 0 20px;
+  font-size: 13.5px;
+  color: var(--ink-dim);
+  line-height: 1.6;
+}

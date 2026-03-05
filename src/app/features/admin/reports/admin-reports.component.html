@@ -1,0 +1,60 @@
+<div class="page">
+
+  <div class="page-header">
+    <h2 class="page-title">Raporty</h2>
+    <p class="page-desc">Pobierz dane i przeglądaj wyniki w wybranym przedziale czasu</p>
+  </div>
+
+  <div class="panel filter-panel">
+    <h3 class="section-heading filter-heading">Zakres dat</h3>
+    <div class="filter-form">
+      <div class="filter-field">
+        <label class="filter-label">Od</label>
+        <p-datepicker [(ngModel)]="fromDate" dateFormat="yy-mm-dd"
+                      placeholder="RRRR-MM-DD" [showIcon]="true" />
+      </div>
+      <div class="filter-field">
+        <label class="filter-label">Do</label>
+        <p-datepicker [(ngModel)]="toDate" dateFormat="yy-mm-dd"
+                      placeholder="RRRR-MM-DD" [showIcon]="true" />
+      </div>
+      <p-button label="Eksportuj CSV" icon="pi pi-download"
+                [loading]="exportLoading()"
+                [disabled]="!fromDate || !toDate"
+                (onClick)="exportCsv()" />
+    </div>
+  </div>
+
+  @if (report()) {
+    <div class="panel metrics-band report-band">
+      <div class="metric-cell">
+        <div class="metric-number color-ok">
+          {{ report()!.revenue | number:'1.0-0' }}
+          <span class="metric-unit">PLN</span>
+        </div>
+        <div class="metric-label">Przychód</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        <div class="metric-number">{{ report()!.newSubscriptions | number }}</div>
+        <div class="metric-label">Nowe subskrypcje</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        <div class="metric-number">{{ report()!.cancellations | number }}</div>
+        <div class="metric-label">Anulowania</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        <div class="metric-number"
+             [class.color-fail]="churnRate() > 10"
+             [class.color-ok]="churnRate() <= 10">
+          {{ churnRate() | number:'1.1-1' }}
+          <span class="metric-unit">%</span>
+        </div>
+        <div class="metric-label">Churn rate</div>
+      </div>
+    </div>
+  }
+
+</div>

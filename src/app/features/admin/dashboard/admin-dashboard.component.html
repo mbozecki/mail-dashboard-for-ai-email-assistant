@@ -1,0 +1,153 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Dashboard admina</h2>
+    <p class="page-desc">Metryki subskrypcji i użytkowania</p>
+  </div>
+
+  @if (loading()) {
+    <div class="panel metrics-band mb-16">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="metric-cell">
+          <p-skeleton height="2.4rem" width="70%" styleClass="mb-2" />
+          <p-skeleton height="0.7rem" width="45%" />
+        </div>
+        @if (i < 4) { <div class="metric-divider"></div> }
+      }
+    </div>
+  } @else {
+    <div class="panel metrics-band mb-16">
+      <div class="metric-cell">
+        <div class="metric-number">{{ metrics()?.activeSubscriptions ?? 0 | number }}</div>
+        <div class="metric-label">Aktywne subskrypcje</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        <div class="metric-number">
+          {{ metrics()?.mrr ?? 0 | number:'1.0-0' }}
+          <span class="metric-unit">PLN</span>
+        </div>
+        <div class="metric-label">MRR</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        <div class="metric-number">{{ metrics()?.newSubscriptionsThisMonth ?? 0 | number }}</div>
+        <div class="metric-label">Nowe / miesiąc</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        <div class="metric-number">{{ metrics()?.cancellationsThisMonth ?? 0 | number }}</div>
+        <div class="metric-label">Anulowania</div>
+      </div>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="panel metrics-band mb-16">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="metric-cell">
+          <p-skeleton height="2.4rem" width="70%" styleClass="mb-2" />
+          <p-skeleton height="0.7rem" width="45%" />
+        </div>
+        @if (i < 4) { <div class="metric-divider"></div> }
+      }
+    </div>
+  } @else {
+    <div class="panel metrics-band mb-16">
+      <div class="metric-cell">
+        <div class="metric-number">{{ metrics()?.totalEmailsProcessed ?? 0 | number }}</div>
+        <div class="metric-label">Łączna liczba maili</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        <div class="metric-number">{{ metrics()?.avgEmailsPerUser ?? 0 | number:'1.0-0' }}</div>
+        <div class="metric-label">Śr. maile / użytk.</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        <div class="metric-number">
+          {{ metrics()?.avgAiCostPerUser ?? 0 | number:'1.2-2' }}
+          <span class="metric-unit">USD</span>
+        </div>
+        <div class="metric-label">Śr. koszt AI / użytk.</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        <div class="metric-number"
+             [class.color-ok]="(metrics()?.avgProfitPerUser ?? 0) >= 0"
+             [class.color-fail]="(metrics()?.avgProfitPerUser ?? 0) < 0">
+          {{ metrics()?.avgProfitPerUser ?? 0 | number:'1.2-2' }}
+          <span class="metric-unit">USD</span>
+        </div>
+        <div class="metric-label">Śr. zysk / użytk.</div>
+      </div>
+    </div>
+  }
+
+  @if (!loading()) {
+    <div class="panel metrics-band mb-16">
+      <div class="metric-cell">
+        <div class="metric-number">
+          {{ metrics()?.infraCostMonthly ?? 0 | number:'1.0-0' }}
+          <span class="metric-unit">USD</span>
+        </div>
+        <div class="metric-label">Koszt infrastruktury / mies.</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        <div class="metric-number color-ok">
+          {{ metrics()?.totalRevenueMonthly ?? 0 | number:'1.0-0' }}
+          <span class="metric-unit">PLN</span>
+        </div>
+        <div class="metric-label">Przychód miesięczny</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        <div class="metric-number">{{ metrics()?.trialingSubscriptions ?? 0 | number }}</div>
+        <div class="metric-label">Próbne subskrypcje</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        <div class="metric-number">{{ metrics()?.canceledSubscriptions ?? 0 | number }}</div>
+        <div class="metric-label">Anulowane łącznie</div>
+      </div>
+    </div>
+  }
+
+  <div class="chart-grid">
+    <div class="panel chart-panel">
+      <div class="chart-header">
+        <h3 class="section-heading">Historia MRR</h3>
+        <span class="chart-unit">PLN</span>
+      </div>
+      @if (loading()) {
+        <p-skeleton height="180px" />
+      } @else if (!(metrics()?.mrrHistory?.length)) {
+        <div class="empty-chart h-180">
+          <p class="no-data-text">Brak danych</p>
+        </div>
+      } @else {
+        <div echarts [options]="lineOptions()" class="h-180"></div>
+      }
+    </div>
+
+    <div class="panel chart-panel">
+      <h3 class="section-heading section-heading--mb">Status subskrypcji</h3>
+      @if (loading()) {
+        <p-skeleton height="180px" />
+      } @else {
+        <div echarts [options]="pieOptions()" class="h-120"></div>
+        <div class="legend-list">
+          @for (item of pieItems(); track item.name) {
+            <div class="legend-row">
+              <div class="legend-meta">
+                <div class="legend-dot" [style.background]="item.color"></div>
+                <span class="legend-label">{{ item.name }}</span>
+              </div>
+              <span class="legend-value">{{ item.value }}</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

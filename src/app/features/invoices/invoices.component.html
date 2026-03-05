@@ -1,0 +1,93 @@
+<div class="page">
+
+  <div class="page-header page-toolbar">
+    <div>
+      <h2 class="page-title">Faktury i dokumenty</h2>
+      <p class="page-desc">
+        {{ total() | number }} dokumentów
+        @if (grandTotal() > 0) {
+          · <span class="grand-total">{{ grandTotal() | number:'1.2-2' }} PLN</span> łącznie
+        }
+      </p>
+    </div>
+    <p-iconfield iconPosition="left" class="search-field">
+      <p-inputicon styleClass="pi pi-search" />
+      <input pInputText [(ngModel)]="sellerFilter" (ngModelChange)="onFilter()"
+             placeholder="Filtruj po sprzedawcy…" class="input-min-w" />
+    </p-iconfield>
+  </div>
+
+  @if (!loading() && sellers().length > 0) {
+    <div class="chip-row">
+      <button class="filter-chip"
+              [class.filter-chip--active]="!sellerFilter"
+              [class.filter-chip--idle]="!!sellerFilter"
+              (click)="clearFilter()">
+        Wszyscy
+      </button>
+      @for (seller of sellers().slice(0, 8); track seller) {
+        <button class="filter-chip"
+                [class.filter-chip--active]="sellerFilter === seller"
+                [class.filter-chip--idle]="sellerFilter !== seller"
+                (click)="filterBySeller(seller)">
+          {{ seller }}
+        </button>
+      }
+    </div>
+  }
+
+  <div class="panel panel-overflow">
+    <p-table [value]="items()" [loading]="loading()"
+             [lazy]="true" [totalRecords]="total()"
+             [rows]="pageSize" [paginator]="true"
+             (onPage)="onPage($event)"
+             [rowHover]="true"
+             styleClass="p-datatable-sm">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Plik</th>
+          <th class="col-seller">Sprzedawca</th>
+          <th class="col-date-inv">Data faktury</th>
+          <th class="col-amount align-right">Brutto (PLN)</th>
+          <th class="col-amount align-right">Netto (PLN)</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td>
+            <div class="file-row">
+              <div class="file-icon">
+                <i class="pi pi-file-pdf file-icon-i"></i>
+              </div>
+              <span class="file-name">{{ item.file_name }}</span>
+            </div>
+          </td>
+          <td><span class="seller-text">{{ item.seller || '—' }}</span></td>
+          <td><span class="date-text">{{ item.invoice_date || '—' }}</span></td>
+          <td class="align-right">
+            @if (item.total_brutto) {
+              <span class="amount-text">{{ item.total_brutto | number:'1.2-2' }}</span>
+            } @else {
+              <span class="amount-empty">—</span>
+            }
+          </td>
+          <td class="align-right">
+            @if (item.total_netto) {
+              <span class="amount-netto">{{ item.total_netto | number:'1.2-2' }}</span>
+            } @else {
+              <span class="amount-empty">—</span>
+            }
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="empty-cell">Brak faktur</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

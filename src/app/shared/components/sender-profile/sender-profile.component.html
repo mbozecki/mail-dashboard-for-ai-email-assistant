@@ -1,0 +1,68 @@
+<p-drawer [visible]="visible()" (visibleChange)="onClose($event)"
+          position="right" [style]="{ width: '420px' }"
+          [header]="sender() || 'Profil nadawcy'">
+
+  @if (visible()) {
+    <div class="profile-body">
+
+      <div class="sender-header">
+        <div class="sender-avatar-lg" [style.background]="avatarColor()">
+          {{ initial() }}
+        </div>
+        <div class="sender-info">
+          <div class="sender-display-name">{{ senderName() || sender() }}</div>
+          @if (senderName()) {
+            <div class="sender-email-line">{{ sender() }}</div>
+          }
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          @if (loadingEmails()) {
+            <p-skeleton height="1.4rem" width="50%" styleClass="mb-1" />
+            <p-skeleton height="0.65rem" width="70%" />
+          } @else {
+            <div class="stat-value">{{ total() | number }}</div>
+            <div class="metric-label" style="margin-top:4px">Emaili ogółem</div>
+          }
+        </div>
+        <div class="stat-card">
+          @if (loadingEmails()) {
+            <p-skeleton height="1.4rem" width="50%" styleClass="mb-1" />
+            <p-skeleton height="0.65rem" width="70%" />
+          } @else {
+            <div class="stat-value-sm">{{ dateRange() }}</div>
+            <div class="metric-label" style="margin-top:4px">Zakres dat</div>
+          }
+        </div>
+      </div>
+
+      <div>
+        <div class="email-section-label">Wiadomości</div>
+
+        @if (loadingEmails()) {
+          @for (i of [1,2,3,4,5]; track i) {
+            <div class="email-item">
+              <p-skeleton height="12px" width="80%" styleClass="mb-1" />
+              <p-skeleton height="10px" width="40%" />
+            </div>
+          }
+        } @else if (!emails().length) {
+          <div class="email-empty">Brak wiadomości</div>
+        } @else {
+          @for (email of emails(); track email.id) {
+            <div class="email-item">
+              <div class="email-subject">{{ email.subject || "(brak tematu)" }}</div>
+              <div class="email-date">{{ email.date.slice(0,10) }}</div>
+            </div>
+          }
+          @if (total() > emails().length) {
+            <div class="email-more">Pokazano {{ emails().length }} z {{ total() | number }}</div>
+          }
+        }
+      </div>
+
+    </div>
+  }
+</p-drawer>

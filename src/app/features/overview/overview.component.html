@@ -1,0 +1,134 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Przegląd</h2>
+    <p class="page-desc">Twoja skrzynka w jednym miejscu</p>
+  </div>
+
+  @if (loading()) {
+    <div class="panel metrics-band mb-20">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="metric-cell">
+          <p-skeleton height="2.4rem" width="70%" styleClass="mb-2" />
+          <p-skeleton height="0.7rem" width="45%" />
+        </div>
+        @if (i < 4) { <div class="metric-divider"></div> }
+      }
+    </div>
+  } @else {
+    <div class="panel metrics-band mb-20">
+      <div class="metric-cell">
+        <div class="metric-number">{{ stats()?.email_count ?? 0 | number }}</div>
+        <div class="metric-label">Emaile</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        <div class="metric-number">{{ stats()?.attachment_count ?? 0 | number }}</div>
+        <div class="metric-label">Dokumenty</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        @if (topSender()) {
+          <div class="metric-number-sm">{{ topSenderShort() }}</div>
+          <div class="metric-label">Główny nadawca</div>
+          <div class="metric-sub">{{ topSender()!.count }} emaili</div>
+        } @else {
+          <div class="metric-number-sm color-ghost">—</div>
+          <div class="metric-label">Główny nadawca</div>
+        }
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        @if (latestPeriod()) {
+          <div class="metric-number">{{ latestPeriod()!.count }}</div>
+          <div class="metric-label">Ostatni okres</div>
+          <div class="metric-sub">{{ latestPeriod()!.month }}</div>
+        } @else {
+          <div class="metric-number color-ghost">0</div>
+          <div class="metric-label">Ostatni okres</div>
+        }
+      </div>
+    </div>
+  }
+
+  <div class="chart-grid">
+    <div class="panel chart-panel">
+      <div class="chart-header">
+        <h3 class="section-heading">Wolumen emaili</h3>
+        <span class="chart-unit">ostatnie 12 miesięcy</span>
+      </div>
+      @if (loading()) {
+        <p-skeleton height="180px" />
+      } @else {
+        <div echarts [options]="barOptions()" class="h-180"></div>
+      }
+    </div>
+
+    <div class="panel chart-panel">
+      <h3 class="section-heading section-heading--mb">Główni nadawcy</h3>
+      @if (loading()) {
+        <p-skeleton height="180px" />
+      } @else if (!stats()?.top_senders?.length) {
+        <div class="empty-chart h-180">
+          <p class="no-data-text">Brak danych</p>
+        </div>
+      } @else {
+        <div echarts [options]="pieOptions()" class="h-120"></div>
+        <div class="sender-list">
+          @for (item of topSendersWithEmail(); track item.email; let i = $index) {
+            <div class="sender-item" [title]="item.email"
+                 (click)="openSenderProfile(item.email, item.name)">
+              <div class="sender-meta">
+                <div class="legend-dot" [style.background]="PIE_COLORS[i % PIE_COLORS.length]"></div>
+                <span class="sender-label">{{ item.name }}</span>
+              </div>
+              <span class="sender-count">{{ item.value }}</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="emails-header">
+      <h3 class="section-heading">Ostatnie emaile</h3>
+      <a routerLink="/dashboard/emails" class="all-link">Pokaż wszystkie →</a>
+    </div>
+
+    @if (loading()) {
+      @for (i of [1,2,3,4,5]; track i) {
+        <div class="email-row">
+          <p-skeleton shape="circle" size="28px" />
+          <div class="skeleton-body">
+            <p-skeleton height="12px" width="55%" styleClass="mb-1.5" />
+            <p-skeleton height="10px" width="30%" />
+          </div>
+          <p-skeleton height="10px" width="55px" />
+        </div>
+      }
+    } @else {
+      @for (email of recentEmails(); track email.id) {
+        <div class="email-row">
+          <div class="sender-avatar" [style.background]="senderColor(email.sender)">
+            {{ senderInitial(email.sender, email.sender_name) }}
+          </div>
+          <div class="email-body">
+            <p class="email-subject">{{ email.subject || '(brak tematu)' }}</p>
+            <p class="email-from">{{ email.sender_name || email.sender }}</p>
+          </div>
+          <span class="email-date">{{ email.date?.slice(0,10) ?? '' }}</span>
+        </div>
+      } @empty {
+        <div class="no-emails">
+          <p class="no-data-text">Brak emaili</p>
+        </div>
+      }
+    }
+  </div>
+</div>
+
+<app-sender-profile
+  [visible]="profileVisible"
+  [sender]="profileSender"
+  [senderName]="profileSenderName"
+  (visibleChange)="profileVisible = $event" />

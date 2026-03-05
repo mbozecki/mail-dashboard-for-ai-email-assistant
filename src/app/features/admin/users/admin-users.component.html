@@ -1,0 +1,72 @@
+<div class="page">
+
+  <div class="page-header page-toolbar">
+    <div>
+      <h2 class="page-title">Użytkownicy</h2>
+      <p class="page-desc">
+        @if (total()) { {{ total() | number }} użytkowników } @else { Zarządzanie użytkownikami }
+      </p>
+    </div>
+    <p-iconfield iconPosition="left" class="search-field">
+      <p-inputicon styleClass="pi pi-search" />
+      <input pInputText [(ngModel)]="search" (ngModelChange)="onSearch()"
+             placeholder="Szukaj email…" class="input-min-w" />
+    </p-iconfield>
+  </div>
+
+  <div class="panel panel-overflow">
+    <p-table [value]="users()" [loading]="loading()"
+             [lazy]="true" [totalRecords]="total()"
+             [rows]="pageSize" [paginator]="true"
+             (onPage)="onPage($event)"
+             [rowHover]="true"
+             styleClass="p-datatable-sm">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Email</th>
+          <th class="col-status">Status</th>
+          <th class="col-num align-right">Maile</th>
+          <th class="col-num align-right">Koszt AI</th>
+          <th class="col-date">Dołączył</th>
+          <th class="col-actions align-center">Akcje</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-user>
+        <tr>
+          <td><span class="col-email">{{ user.email }}</span></td>
+          <td>
+            <p-tag [value]="statusLabel(user.subscriptionStatus)"
+                   [severity]="statusSeverity(user.subscriptionStatus)" />
+          </td>
+          <td class="align-right">
+            <span class="col-num-val">{{ user.emailsProcessed | number }}</span>
+          </td>
+          <td class="align-right">
+            <span class="col-num-val">{{ user.aiCostUsd | number:'1.3-3' }} $</span>
+          </td>
+          <td><span class="col-date-val">{{ user.createdAt?.slice(0,10) ?? '—' }}</span></td>
+          <td class="align-center">
+            @if (user.subscriptionStatus === 'active') {
+              <p-button label="Zablokuj" icon="pi pi-times-circle"
+                        severity="danger" size="small"
+                        [loading]="actionLoading[user.id]"
+                        (onClick)="updateSub(user, 'revoke')" />
+            } @else {
+              <p-button label="Aktywuj" icon="pi pi-check-circle"
+                        severity="success" size="small"
+                        [loading]="actionLoading[user.id]"
+                        (onClick)="updateSub(user, 'grant')" />
+            }
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr><td colspan="6" class="empty-cell">Brak użytkowników</td></tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+</div>

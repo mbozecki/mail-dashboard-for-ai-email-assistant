@@ -1,0 +1,120 @@
+.settings-stack {
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-card {
+  padding: 20px 24px;
+}
+
+.settings-section-h {
+  margin-bottom: 16px;
+}
+
+.account-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.account-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.account-row--border {
+  padding-top: 12px;
+  border-top: 1px solid var(--border-ghost);
+}
+
+.account-key {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.account-val {
+  font-size: 13px;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.account-id {
+  color: var(--ink-ghost);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.signout-row {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.health-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.health-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.health-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.health-row--border {
+  padding-top: 12px;
+  border-top: 1px solid var(--border-ghost);
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+
+  &--ok  { background: var(--ok); }
+  &--off { background: var(--ink-ghost); }
+}
+
+.status-text {
+  font-size: 12.5px;
+  font-weight: 500;
+
+  &--ok  { color: var(--ok); }
+  &--off { color: var(--ink-muted); }
+}
+
+.health-error {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+.about-text {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin: 0;
+  line-height: 1.7;
+}
+
+.about-stack {
+  color: var(--ink-ghost);
+}

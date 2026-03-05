@@ -1,0 +1,70 @@
+<div class="page">
+
+  <div class="page-header">
+    <h2 class="page-title">Subskrypcja</h2>
+    <p class="page-desc">Zarządzaj swoją subskrypcją asystenta AI</p>
+  </div>
+
+  @if (showSuccessBanner()) {
+    <div class="success-banner">
+      <i class="pi pi-check-circle success-banner-icon"></i>
+      <span class="success-banner-text">
+        Płatność zakończona pomyślnie! Twoja subskrypcja jest aktywna.
+      </span>
+    </div>
+  }
+
+  <div class="panel sub-card">
+
+    @if (loading()) {
+      <div class="skeleton-stack">
+        <p-skeleton height="1.8rem" width="50%" />
+        <p-skeleton height="1rem" width="35%" />
+        <p-skeleton height="1rem" width="60%" />
+        <p-skeleton height="2.4rem" width="160px" styleClass="mt-2" />
+      </div>
+    } @else {
+
+      <div class="status-row">
+        <span class="status-label">Status subskrypcji</span>
+        <p-tag [value]="statusLabel()" [severity]="statusSeverity()" />
+      </div>
+
+      @if (sub() && sub()!.status !== 'none') {
+        <div class="details">
+          @if (sub()!.pricePerMonth) {
+            <div class="detail-row">
+              <span class="detail-key">Opłata miesięczna</span>
+              <span class="detail-val">{{ sub()!.pricePerMonth | number:'1.2-2' }} PLN / miesiąc</span>
+            </div>
+          }
+          @if (sub()!.currentPeriodEnd) {
+            <div class="detail-row">
+              <span class="detail-key">
+                {{ sub()!.status === 'canceled' ? 'Dostęp do' : 'Odnowienie' }}
+              </span>
+              <span class="detail-val">{{ sub()!.currentPeriodEnd!.slice(0,10) }}</span>
+            </div>
+          }
+        </div>
+      }
+
+      @if (sub()!.status === 'none' || sub()!.status === 'canceled') {
+        <p class="sub-desc">
+          Pełny dostęp do asystenta AI za 49 PLN miesięcznie. Pytaj o swoje maile i faktury,
+          analizuj wydatki i szukaj informacji — bez limitu.
+        </p>
+        <p-button label="Subskrybuj" icon="pi pi-credit-card"
+                  [loading]="actionLoading()"
+                  (onClick)="subscribe()" />
+      } @else {
+        <p-button label="Zarządzaj / Anuluj" icon="pi pi-external-link"
+                  severity="secondary"
+                  [loading]="actionLoading()"
+                  (onClick)="openPortal()" />
+      }
+
+    }
+  </div>
+
+</div>

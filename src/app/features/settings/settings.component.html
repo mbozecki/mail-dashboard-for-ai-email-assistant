@@ -1,0 +1,89 @@
+<div class="page">
+
+  <div class="page-header">
+    <h2 class="page-title">Ustawienia</h2>
+    <p class="page-desc">Informacje o koncie i systemie</p>
+  </div>
+
+  <div class="settings-stack">
+
+    <div class="panel settings-card">
+      <h3 class="section-heading settings-section-h">Konto</h3>
+
+      <div class="account-list">
+        <div class="account-row">
+          <span class="account-key">Email</span>
+          <span class="account-val">{{ supabase.userEmail ?? '—' }}</span>
+        </div>
+        <div class="account-row account-row--border">
+          <span class="account-key">ID użytkownika</span>
+          <span class="mono account-id">
+            {{ (supabase.session()?.user?.id ?? '—') | slice:0:20 }}…
+          </span>
+        </div>
+      </div>
+
+      <div class="signout-row">
+        <p-button label="Wyloguj się" icon="pi pi-sign-out" severity="danger"
+                  size="small" (onClick)="signOut()" />
+      </div>
+    </div>
+
+    <div class="panel settings-card">
+      <div class="health-header">
+        <h3 class="section-heading">Status systemu</h3>
+        <p-button icon="pi pi-refresh" severity="secondary" size="small"
+                  (onClick)="loadHealth()" [loading]="healthLoading()"
+                  styleClass="p-button-sm" />
+      </div>
+
+      @if (healthLoading()) {
+        <div class="health-list">
+          @for (i of [1,2,3]; track i) {
+            <div class="health-row">
+              <p-skeleton height="13px" width="80px" />
+              <p-skeleton height="20px" width="60px" />
+            </div>
+          }
+        </div>
+      } @else if (health()) {
+        <div class="health-list">
+          <div class="health-row">
+            <span class="account-key">API</span>
+            <div class="status-indicator">
+              <div class="status-dot status-dot--ok"></div>
+              <span class="status-text status-text--ok">online ✓</span>
+            </div>
+          </div>
+          <div class="health-row health-row--border">
+            <span class="account-key">Monitorowanie IMAP</span>
+            <span class="account-val tabular">{{ health()!.imap_watchers }}</span>
+          </div>
+          <div class="health-row health-row--border">
+            <span class="account-key">Bot Telegram</span>
+            <div class="status-indicator">
+              <div class="status-dot" [class.status-dot--ok]="health()!.telegram"
+                   [class.status-dot--off]="!health()!.telegram"></div>
+              <span class="status-text"
+                    [class.status-text--ok]="health()!.telegram"
+                    [class.status-text--off]="!health()!.telegram">
+                {{ health()!.telegram ? 'połączony' : 'wyłączony' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <p class="health-error">Nie można połączyć z backendem</p>
+      }
+    </div>
+
+    <div class="panel settings-card">
+      <h3 class="section-heading settings-section-h">O aplikacji</h3>
+      <p class="about-text">
+        AI Asystent Dashboard — osobisty asystent email<br>
+        <span class="about-stack">Angular 19 · PrimeNG 19 · FastAPI</span>
+      </p>
+    </div>
+
+  </div>
+</div>

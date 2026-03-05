@@ -1,0 +1,37 @@
+.section-heading--mb {
+  margin-bottom: 14px;
+}
+
+.doc-grid {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.doc-card {
+  flex: 1;
+  min-width: 160px;
+  padding: 16px;
+  background: var(--raised);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+}
+
+.doc-amount {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.doc-amount-unit {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.doc-count {
+  font-size: 12px;
+  color: var(--ink-ghost);
+  margin-top: 3px;
+}

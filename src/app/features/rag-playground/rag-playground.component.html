@@ -1,0 +1,71 @@
+<div class="rag-page page">
+
+  <div class="rag-header page-header">
+    <h2 class="page-title">Zapytaj AI</h2>
+    <p class="page-desc">Przeszukaj emaile, faktury i dokumenty w naturalnym języku</p>
+  </div>
+
+  <div #chatContainer class="chat-container panel">
+
+    @if (messages().length === 0) {
+      <div class="empty-state">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <circle cx="18" cy="27" r="3.6" fill="#8b5cf6" opacity="0.5"/>
+          <path d="M10.8 20.4 A10.4 10.4 0 0 1 25.2 20.4"
+                stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" opacity="0.45"/>
+          <path d="M4.8 14 A16.8 16.8 0 0 1 31.2 14"
+                stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" opacity="0.2"/>
+        </svg>
+        <p class="empty-hint">
+          Zapytaj o cokolwiek dotyczącego emaili lub faktur.<br>
+          <span class="color-ghost">
+            Np. „Jaka była ostatnia faktura z Wolt?” lub „Ile emailów dostałem w listopadzie?”
+          </span>
+        </p>
+      </div>
+    }
+
+    @for (msg of messages(); track $index) {
+      <div [class]="msg.role === 'user' ? 'msg-row msg-row--user' : 'msg-row msg-row--ai'">
+
+        @if (msg.loading) {
+          <div class="chat-ai">
+            <div class="typing-wrap">
+              <div class="typing-dots">
+                @for (dot of [1,2,3]; track dot) {
+                  <div class="typing-dot"></div>
+                }
+              </div>
+              <span class="typing-label">Szukam…</span>
+            </div>
+          </div>
+        } @else {
+          <div [class]="msg.role === 'user' ? 'chat-user' : 'chat-ai'">{{ msg.content }}</div>
+
+          @if (msg.sources && msg.sources.length > 0) {
+            <div class="source-list">
+              @for (src of msg.sources; track $index) {
+                <span class="source-chip">
+                  <i [class]="src.doc_type === 'INVOICE' ? 'pi pi-file-pdf source-icon' : 'pi pi-envelope source-icon'"></i>
+                  {{ src.seller || src.sender || src.doc_type }}
+                  @if (src.date) { · {{ src.date }} }
+                </span>
+              }
+            </div>
+          }
+        }
+      </div>
+    }
+  </div>
+
+  <div class="chat-input-row">
+    <input pInputText [(ngModel)]="question" (keydown.enter)="send()"
+           placeholder="Zadaj pytanie o emaile…"
+           class="chat-input"
+           [disabled]="sending()" />
+    <div class="chat-send">
+      <p-button icon="pi pi-send" (onClick)="send()"
+                [loading]="sending()" [disabled]="!question.trim()" />
+    </div>
+  </div>
+</div>

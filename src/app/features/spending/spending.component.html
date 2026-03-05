@@ -1,0 +1,112 @@
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Analiza wydatków</h2>
+    <p class="page-desc">Faktury i koszty wyciągnięte z Twojej poczty</p>
+  </div>
+
+  @if (loading()) {
+    <div class="panel metrics-band mb-20">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="metric-cell">
+          <p-skeleton height="2.4rem" width="70%" styleClass="mb-2" />
+          <p-skeleton height="0.7rem" width="45%" />
+        </div>
+        @if (i < 4) { <div class="metric-divider"></div> }
+      }
+    </div>
+  } @else {
+    <div class="panel metrics-band mb-20">
+      <div class="metric-cell">
+        <div class="metric-number">
+          {{ (data()?.total_pln ?? 0) | number:'1.0-0' }}
+          <span class="metric-unit">PLN</span>
+        </div>
+        <div class="metric-label">Łączne wydatki</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        <div class="metric-number">
+          {{ (data()?.avg_monthly_pln ?? 0) | number:'1.0-0' }}
+          <span class="metric-unit">PLN</span>
+        </div>
+        <div class="metric-label">Średnio / miesiąc</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        <div class="metric-number">{{ data()?.invoice_count ?? 0 | number }}</div>
+        <div class="metric-label">Faktur ogółem</div>
+      </div>
+      <div class="metric-divider"></div>
+      <div class="metric-cell">
+        @if (data()?.top_seller) {
+          <div class="metric-number-sm">{{ data()!.top_seller }}</div>
+          <div class="metric-label">Główny dostawca</div>
+        } @else {
+          <div class="metric-number-sm color-ghost">—</div>
+          <div class="metric-label">Główny dostawca</div>
+        }
+      </div>
+    </div>
+  }
+
+  <div class="chart-grid mb-16">
+    <div class="panel chart-panel">
+      <div class="chart-header">
+        <h3 class="section-heading">Wydatki miesięcznie</h3>
+        <span class="chart-unit">PLN</span>
+      </div>
+      @if (loading()) {
+        <p-skeleton height="200px" />
+      } @else if (!data()?.monthly?.length) {
+        <div class="empty-chart h-200">
+          <p class="no-data-text">Brak danych</p>
+        </div>
+      } @else {
+        <div echarts [options]="barOptions()" class="h-200"></div>
+      }
+    </div>
+
+    <div class="panel chart-panel">
+      <h3 class="section-heading section-heading--mb">Wg dostawcy</h3>
+      @if (loading()) {
+        <p-skeleton height="200px" />
+      } @else if (!data()?.by_seller?.length) {
+        <div class="empty-chart h-200">
+          <p class="no-data-text">Brak danych</p>
+        </div>
+      } @else {
+        <div echarts [options]="pieOptions()" class="h-120"></div>
+        <div class="legend-list">
+          @for (item of sellerItems(); track item.seller; let i = $index) {
+            <div class="legend-row">
+              <div class="legend-meta">
+                <div class="legend-dot" [style.background]="SELLER_COLORS[i % SELLER_COLORS.length]"></div>
+                <span class="legend-label">{{ item.seller }}</span>
+              </div>
+              <span class="legend-value">{{ item.total | number:'1.0-0' }} PLN</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  @if (!loading() && data()?.by_doc_type?.length) {
+    <div class="panel chart-panel">
+      <h3 class="section-heading section-heading--mb">Wg rodzaju dokumentu</h3>
+      <div class="doc-grid">
+        @for (item of data()!.by_doc_type; track item.doc_type) {
+          <div class="doc-card">
+            <div class="doc-amount">
+              {{ item.total | number:'1.0-0' }} <span class="doc-amount-unit">PLN</span>
+            </div>
+            <div class="metric-label">{{ item.doc_type }}</div>
+            <div class="doc-count">
+              {{ item.count }} {{ item.count === 1 ? 'faktura' : 'faktury/faktur' }}
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
